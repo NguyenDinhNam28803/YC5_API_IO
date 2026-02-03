@@ -1,0 +1,6 @@
+@YC5_API_IO_HostAddress = http://localhost:5101
+
+GET {{YC5_API_IO_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
