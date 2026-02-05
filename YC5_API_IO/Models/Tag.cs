@@ -7,7 +7,7 @@ namespace YC5_API_IO.Models
         [Key]
         [Required]
         [StringLength(50)]
-        public string TagId { get; set; } = string.Empty;
+        public string TagId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(50)]

@@ -6,7 +6,7 @@ namespace YC5_API_IO.Models
     {
         [Key]
         [Required]
-        public string? CategoryId { get; set; }
+        public string CategoryId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(50)]

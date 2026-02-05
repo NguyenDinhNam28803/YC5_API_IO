@@ -7,7 +7,7 @@ namespace YC5_API_IO.Models
         [Key]
         [Required]
         [StringLength(50)]
-        public string CommentId { get; set; } = string.Empty;
+        public string CommentId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(50)]
@@ -24,5 +24,8 @@ namespace YC5_API_IO.Models
         [Required]
         [StringLength(50)]
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation property for related Attachments
+        public ICollection<Attachment>? Attachments { get; set; }
     }
 }

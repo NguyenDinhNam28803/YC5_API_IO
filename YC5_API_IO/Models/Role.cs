@@ -6,7 +6,7 @@ namespace YC5_API_IO.Models
     {
         [Key]
         [Required]
-        public string RoleId { get; set; } = string.Empty;
+        public string RoleId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(100)]

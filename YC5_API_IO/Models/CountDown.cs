@@ -14,7 +14,7 @@ namespace YC5_API_IO.Models
         [Key]
         [Required]
         [StringLength(50)]
-        public string CountDownId { get; set; } = string.Empty;
+                public string CountDownId { get; set;} = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(50)]

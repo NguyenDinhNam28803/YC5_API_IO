@@ -20,7 +20,7 @@ namespace YC5_API_IO.Models
         [Key]
         [Required]
         [StringLength(50)]
-        public string TaskId { get; set; } = string.Empty;
+        public string TaskId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         [StringLength(50)]
@@ -31,7 +31,7 @@ namespace YC5_API_IO.Models
         public string UserId { get; set; } = string.Empty;
 
         [StringLength(50)]
-        public string ParentTaskId { get; set; } = string.Empty;
+        public string? ParentTaskId { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -66,5 +66,8 @@ namespace YC5_API_IO.Models
 
         // Navigation property for related SubTasks
         public ICollection<Task>? SubTasks { get; set; }
+
+        // Navigation property for related Attachments
+        public ICollection<Attachment>? Attachments { get; set; }
     }
 }
