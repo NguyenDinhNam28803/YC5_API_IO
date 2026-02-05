@@ -80,5 +80,3 @@ YC5_API_IO/
 
 ---
 *Dự án đang trong quá trình phát triển.*
----
-*Dự án đang trong quá trình phát triển.*
