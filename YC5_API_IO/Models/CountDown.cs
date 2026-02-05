@@ -28,12 +28,8 @@ namespace YC5_API_IO.Models
         [StringLength(50)]
         public string CountDownDescription { get; set;} = string.Empty;
 
-        [Required]
-        [StringLength(50)]
         public CountDownStatus CountDownStatus { get; set;} = CountDownStatus.Active;
 
-        [Required]
-        [StringLength(50)]
         public DateTime TargetDate { get; set;} = DateTime.UtcNow;
     }
 }

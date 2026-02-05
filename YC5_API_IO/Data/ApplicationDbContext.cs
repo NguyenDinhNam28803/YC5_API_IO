@@ -85,9 +85,9 @@ namespace YC5_API_IO.Data
 
             // Seed Role data
             modelBuilder.Entity<Role>().HasData(
-                new Role { RoleId = Guid.NewGuid().ToString(), RoleName = "Admin", RoleDescription = "Administrator role with full access" },
-                new Role { RoleId = Guid.NewGuid().ToString(), RoleName = "Manager", RoleDescription = "Manager role with elevated privileges" },
-                new Role { RoleId = Guid.NewGuid().ToString(), RoleName = "User", RoleDescription = "Standard user role" }
+                new Role { RoleId = "a18be9c0-aa65-4af8-bd17-002120485633", RoleName = "Admin", RoleDescription = "Administrator role with full access" },
+                new Role { RoleId = "c2a1e1b2-3e4f-5a6b-7c8d-9e0f1a2b3c4d", RoleName = "Manager", RoleDescription = "Manager role with elevated privileges" },
+                new Role { RoleId = "e5f6g7h8-i9j0-k1l2-m3n4-o5p6q7r8s9t0", RoleName = "User", RoleDescription = "Standard user role" }
             );
 
             // Configure User-Notification (One-to-Many)
@@ -110,7 +110,7 @@ namespace YC5_API_IO.Data
                 .WithOne(a => a.Task)
                 .HasForeignKey(a => a.TaskId)
                 .IsRequired(false) // TaskId is nullable in Attachment
-                .OnDelete(DeleteBehavior.Cascade); // Delete Attachments when Task is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Task if Attachments are associated
 
             // Configure Comment-Attachment (One-to-Many)
             modelBuilder.Entity<Comment>()
@@ -118,7 +118,7 @@ namespace YC5_API_IO.Data
                 .WithOne(a => a.Comment)
                 .HasForeignKey(a => a.CommentId)
                 .IsRequired(false) // CommentId is nullable in Attachment
-                .OnDelete(DeleteBehavior.Cascade); // Delete Attachments when Comment is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Comment if Attachments are associated
         }
     }
 }

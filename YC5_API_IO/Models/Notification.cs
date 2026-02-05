@@ -8,6 +8,7 @@ namespace YC5_API_IO.Models
     {
         [Key]
         [Required]
+        [StringLength(50)]
         public string NotificationId { get; set; } = Guid.NewGuid().ToString();
 
         [Required]

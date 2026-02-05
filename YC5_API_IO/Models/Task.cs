@@ -41,22 +41,15 @@ namespace YC5_API_IO.Models
         public string TaskDescription { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(50)]
         public TaskStatus TaskStatus { get; set; } = TaskStatus.InProgress;
 
-        [StringLength(50)]
-        public PriorityLevel Status { get; set; } = PriorityLevel.Low;
+        public PriorityLevel TaskPriority { get; set; } = PriorityLevel.Low;
 
-        [Required]
-        [StringLength(50)]
         public DateTime DueDate { get; set; } = DateTime.UtcNow;
 
-        [Required]
-        [StringLength(50)]
-        public string CompletedAt { get; set; } = string.Empty;
+        public DateTime? CompletedAt { get; set; }
 
-        [StringLength(50)]
-        public string UpdatedAt { get; set; } = string.Empty;
+        public DateTime? UpdatedAt { get; set; }
 
         // Navigation property for related Tags
         public ICollection<Tag>? Tags { get; set; }
