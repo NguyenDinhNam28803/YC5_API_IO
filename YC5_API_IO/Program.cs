@@ -14,6 +14,8 @@ builder.Services.AddDbContext<YC5_API_IO.Data.ApplicationDbContext>(options =>
 
 // Register JWT Service
 builder.Services.AddScoped<IJwtInterface, JWTService>();
+builder.Services.AddScoped<AuthInterface, AuthService>();
+builder.Services.AddScoped<UserInterface, UserService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
