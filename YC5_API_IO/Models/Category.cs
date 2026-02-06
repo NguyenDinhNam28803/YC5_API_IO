@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YC5_API_IO.Models
 {
@@ -13,6 +14,9 @@ namespace YC5_API_IO.Models
         [StringLength(50)]
         public string UserId { get; set; } = string.Empty;
 
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
+
         [Required]
         [StringLength(50)]
         public string CategoryName { get; set; } = string.Empty;
@@ -26,5 +30,10 @@ namespace YC5_API_IO.Models
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsDeleted { get; set; } = false;
+
+        // Navigation property for related Tasks
+        public ICollection<Task>? Tasks { get; set; }
     }
 }

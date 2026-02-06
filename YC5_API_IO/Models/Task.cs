@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YC5_API_IO.Models
 {
@@ -51,8 +52,18 @@ namespace YC5_API_IO.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        // Navigation property for related Tags
-        public ICollection<Tag>? Tags { get; set; }
+        // Explicit Navigation properties for relationships
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
+
+        [ForeignKey("ParentTaskId")]
+        public Task? ParentTask { get; set; }
+
+        // Navigation property for related Tags (many-to-many through TaskTag)
+        public ICollection<TaskTag>? TaskTags { get; set; }
 
         // Navigation property for related Comments
         public ICollection<Comment>? Comments { get; set; }
@@ -62,5 +73,8 @@ namespace YC5_API_IO.Models
 
         // Navigation property for related Attachments
         public ICollection<Attachment>? Attachments { get; set; }
+
+        // Navigation property for related Reminders
+        public ICollection<Reminder>? Reminders { get; set; }
     }
 }

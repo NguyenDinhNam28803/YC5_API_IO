@@ -13,8 +13,8 @@ namespace YC5_API_IO.Models
         [StringLength(50)]
         public string TagName { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(50)]
-        public string TaskId { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; } = false;
+
+
     }
 }

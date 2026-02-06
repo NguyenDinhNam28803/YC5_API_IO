@@ -49,6 +49,9 @@ namespace YC5_API_IO.Models
         // Navigation property for related Notifications
         public ICollection<Notification>? Notifications { get; set; }
 
+        // Navigation property for related Comments
+        public ICollection<Comment>? Comments { get; set; }
+
         // Navigation property for attachments uploaded by this user
         public ICollection<Attachment>? UploadedAttachments { get; set; }
     }

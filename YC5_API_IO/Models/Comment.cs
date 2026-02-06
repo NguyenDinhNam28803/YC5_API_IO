@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YC5_API_IO.Models
 {
@@ -15,6 +16,10 @@ namespace YC5_API_IO.Models
 
         [Required]
         [StringLength(50)]
+        public string UserId { get; set; } = string.Empty; // User who made the comment
+
+        [Required]
+        [StringLength(50)]
         public string CommentTitle { get; set; } = string.Empty;
 
         [Required]
@@ -25,5 +30,13 @@ namespace YC5_API_IO.Models
 
         // Navigation property for related Attachments
         public ICollection<Attachment>? Attachments { get; set; }
+
+        // Navigation property for User
+        [ForeignKey("UserId")]
+        public User? User { get; set; }
+
+        // Navigation property for Task
+        [ForeignKey("TaskId")]
+        public Task? Task { get; set; }
     }
 }
