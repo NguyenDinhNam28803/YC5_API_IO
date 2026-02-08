@@ -1,82 +1,112 @@
-# YC5_API_IO
+# YC5_API_IO - Hệ thống Quản lý Công việc (Backend API)
 
-YC5_API_IO là một Web API được xây dựng bằng .NET 9, cung cấp các dịch vụ cho ứng dụng quản lý công việc (Task Management). Project bao gồm các tính năng xác thực người dùng, quản lý công việc, danh mục, nhãn và nhiều tính năng hỗ trợ khác.
+YC5_API_IO là một giải pháp Web API mạnh mẽ được xây dựng trên nền tảng .NET 9, thiết kế để cung cấp các dịch vụ backend cho ứng dụng quản lý công việc (Task Management). Project được xây dựng với kiến trúc hướng đối tượng, hỗ trợ phân cấp công việc, tương tác người dùng và các tính năng theo dõi thời gian.
 
-## Công nghệ sử dụng
+## 🚀 Công nghệ sử dụng
 
-- **Framework:** .NET 9.0 (ASP.NET Core API)
-- **Database:** SQL Server
-- **ORM:** Entity Framework Core
-- **Authentication:** JWT (JSON Web Token)
-- **Hashing:** BCrypt.Net-Next
-- **Excel Library:** EPPlus
-- **Documentation:** OpenAPI (Swagger)
-- **Containerization:** Docker
+- **Runtime:** .NET 9.0 (ASP.NET Core Web API)
+- **Cơ sở dữ liệu:** Microsoft SQL Server
+- **ORM:** Entity Framework Core 9.0.12
+- **Bảo mật & Xác thực:**
+  - JWT Bearer Authentication (JSON Web Token)
+  - BCrypt.Net-Next cho mã hóa mật khẩu
+  - System.IdentityModel.Tokens.Jwt
+- **Tiện ích:**
+  - EPPlus (Xử lý Excel chuyên nghiệp)
+  - OpenAPI/Swagger (Tài liệu hóa API)
+- **DevOps:** Docker hỗ trợ môi trường container.
 
-## Tính năng chính
+## 🏗️ Kiến trúc dữ liệu (Data Models)
 
-- **Quản lý người dùng:** Đăng ký, đăng nhập và xác thực qua JWT.
-- **Quản lý công việc (Tasks):** Tạo, cập nhật, xóa và theo dõi trạng thái công việc (InProgress, Completed) cùng mức độ ưu tiên (Low, Medium, High).
-- **Phân loại & Nhãn:** Tổ chức công việc theo danh mục (Categories) và nhãn (Tags).
-- **Tương tác:** Cho phép thêm bình luận (Comments) vào các công việc.
-- **Công việc con (Sub-tasks):** Hỗ trợ cấu trúc công việc phân cấp.
-- **Đếm ngược (Countdowns):** Tính năng theo dõi thời gian.
-- **Thông báo Email:** Tích hợp gửi email qua SMTP.
-- **Xuất nhập dữ liệu:** Hỗ trợ xử lý file Excel thông qua EPPlus.
+Hệ thống bao gồm các thực thể chính với các thuộc tính chi tiết:
 
-## Cấu trúc thư mục
+### 1. Người dùng (User)
+- `UserId`: Khóa chính.
+- `UserName`, `Email`, `PhoneNumber`: Thông tin định danh.
+- `PasswordHasshed`: Mật khẩu đã được mã hóa.
+- `CreatedAt`, `LastUpdatedAt`: Theo dõi thời gian tạo và cập nhật.
+- **Quan hệ:** Một người dùng có thể có nhiều Danh mục, Công việc và Bộ đếm ngược.
 
-```
+### 2. Công việc (Task)
+- `TaskId`: Khóa chính.
+- `TaskName`, `TaskDescription`: Thông tin chi tiết công việc.
+- `TaskStatus`: Trạng thái (`InProgress`, `Completed`).
+- `Status` (Priority): Mức độ ưu tiên (`Low`, `Medium`, `High`).
+- `DueDate`, `CompletedAt`: Quản lý thời hạn.
+- **Tính năng đặc biệt:** Hỗ trợ `ParentTaskId` để tạo cấu trúc công việc con (Sub-tasks) không giới hạn cấp.
+- **Quan hệ:** Gắn liền với Category, User, Tags, và Comments.
+
+### 3. Danh mục (Category)
+- `CategoryId`, `CategoryName`, `CategoryDescription`.
+- `Color`: Mã màu để phân loại trực quan (Mặc định: "Gray").
+
+### 4. Thành phần khác
+- **Comment:** Hỗ trợ trao đổi trong từng công việc.
+- **Tag:** Nhãn dán linh hoạt để lọc công việc.
+- **Role:** Hệ thống phân quyền (Admin, User, v.v.).
+- **CountDown:** Bộ đếm ngược cho các sự kiện quan trọng.
+
+## ⚙️ Cấu hình hệ thống
+
+Project sử dụng file `appsettings.json` để quản lý các tham số cấu hình:
+
+- **ConnectionStrings:** Kết nối tới SQL Server (`YC5_THUCTAP_API`).
+- **JwtSettings:**
+  - `SecretKey`: Khóa bí mật để ký token.
+  - `Issuer`: NamNguyen.
+  - `Audience`: TodoAppUsers.
+  - `ExpiryMinutes`: 60 phút.
+- **EmailSettings:** Cấu hình SMTP Gmail để gửi thông báo tự động.
+- **EPPlus:** Giấy phép sử dụng Non-Commercial cho cá nhân.
+
+## 📁 Cấu trúc thư mục chi tiết
+
+```text
 YC5_API_IO/
-├── Controllers/    # Các API endpoints
-├── Data/           # DbContext và cấu hình Database
-├── Interfaces/     # Các Interface (ví dụ: IJwtInterface)
-├── Models/         # Các Entity models (User, Task, Category, v.v.)
-├── Services/       # Logic xử lý nghiệp vụ (ví dụ: JWTService)
-├── Properties/     # Cấu hình khởi chạy
-└── Program.cs      # File cấu hình chính của ứng dụng
+├── Controllers/       # Chứa các bộ điều khiển xử lý HTTP Request (Hiện tại: WeatherForecast)
+├── Data/              # Quản lý Database Context (ApplicationDbContext)
+├── Models/            # Định nghĩa các thực thể (Entities) của hệ thống
+├── Interfaces/        # Định nghĩa các giao diện nghiệp vụ (ví dụ: IJwtInterfaces)
+├── Services/          # Triển khai logic nghiệp vụ (ví dụ: JWTService)
+├── Dto/               # Data Transfer Objects (Đang phát triển)
+├── Properties/        # Cấu hình môi trường và launchSettings.json
+├── YC5_API_IO.csproj  # File quản lý package và project
+├── Dockerfile         # Cấu hình đóng gói ứng dụng
+└── Program.cs         # Entry point, cấu hình Middleware và Dependency Injection
 ```
 
-## Cài đặt và Chạy project
+## 🛠️ Hướng dẫn cài đặt
 
-### Yêu cầu hệ thống
-
-- .NET 9.0 SDK
-- SQL Server
-- Visual Studio 2022 hoặc VS Code
+### Tiền đề
+- Cài đặt [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- SQL Server (LocalDB hoặc Express)
 
 ### Các bước thực hiện
 
-1. **Clone project:**
+1. **Clone repository:**
    ```bash
-   git clone <repository_url>
-   cd <project_folder>
+   git clone <url-repository>
    ```
 
-2. **Cấu hình Database:**
-   Cập nhật chuỗi kết nối trong file `YC5_API_IO/appsettings.json`:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=<Your_Server>;Database=YC5_THUCTAP_API;Trusted_Connection=True;..."
-   }
-   ```
+2. **Cập nhật cấu hình:**
+   Mở `YC5_API_IO/appsettings.json` và điều chỉnh `DefaultConnection` phù hợp với Server SQL của bạn.
 
-3. **Cấu hình JWT & Email:**
-   Thay đổi các thông tin trong `JwtSettings` và `EmailSettings` trong file `appsettings.json` cho phù hợp với môi trường của bạn.
-
-4. **Chạy Migration:**
+3. **Khởi tạo Database:**
+   Mở terminal tại thư mục project và chạy:
    ```bash
    dotnet ef database update
    ```
 
-5. **Chạy ứng dụng:**
+4. **Khởi chạy ứng dụng:**
    ```bash
    dotnet run --project YC5_API_IO
    ```
-   Ứng dụng sẽ mặc định chạy tại `https://localhost:7157` (hoặc cổng được cấu hình trong `launchSettings.json`). Truy cập `/swagger` hoặc dùng công cụ hỗ trợ OpenAPI để xem tài liệu API.
 
-## Tác giả
-- Nam Nguyễn (nguyendinhnam241209@gmail.com)
+5. **Kiểm tra API:**
+   Truy cập `https://localhost:7157/swagger` (cổng có thể thay đổi tùy cấu hình) để xem giao diện Swagger UI.
+
+## 📝 Trạng thái dự án
+Dự án hiện đã hoàn thành phần thiết kế Models và cấu hình Infrastructure (Authentication, DB Context). Các logic nghiệp vụ (Services) và các API Endpoints (Controllers) đang trong quá trình hoàn thiện.
 
 ---
-*Dự án đang trong quá trình phát triển.*
+**Phát triển bởi:** Nam Nguyễn (nguyendinhnam241209@gmail.com)
