@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YC5_API_IO.Data;
 
@@ -11,9 +12,11 @@ using YC5_API_IO.Data;
 namespace YC5_API_IO.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260208145509_UpdateNewFormOfDatabase")]
+    partial class UpdateNewFormOfDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -338,21 +341,21 @@ namespace YC5_API_IO.Migrations
                         new
                         {
                             RoleId = "a18be9c0-aa65-4af8-bd17-002120485633",
-                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 2, 8, 14, 55, 8, 273, DateTimeKind.Utc).AddTicks(7877),
                             RoleDescription = "Administrator role with full access",
                             RoleName = "Admin"
                         },
                         new
                         {
                             RoleId = "c2a1e1b2-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
-                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 2, 8, 14, 55, 8, 273, DateTimeKind.Utc).AddTicks(9057),
                             RoleDescription = "Manager role with elevated privileges",
                             RoleName = "Manager"
                         },
                         new
                         {
                             RoleId = "e5f6g7h8-i9j0-k1l2-m3n4-o5p6q7r8s9t0",
-                            CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 2, 8, 14, 55, 8, 273, DateTimeKind.Utc).AddTicks(9062),
                             RoleDescription = "Standard user role",
                             RoleName = "User"
                         });

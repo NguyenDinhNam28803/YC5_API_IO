@@ -54,5 +54,8 @@ namespace YC5_API_IO.Models
 
         // Navigation property for attachments uploaded by this user
         public ICollection<Attachment>? UploadedAttachments { get; set; }
+
+        // Navigation property for related Analysis records
+        public ICollection<Analysis>? Analysis { get; set; }
     }
 }

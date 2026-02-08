@@ -26,7 +26,7 @@ namespace YC5_API_IO.Models
         [StringLength(50)]
         public string CommentText { get; set; } = string.Empty;
 
-        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property for related Attachments
         public ICollection<Attachment>? Attachments { get; set; }

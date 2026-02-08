@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using YC5_API_IO.Interfaces;
 using YC5_API_IO.Services;
+using OfficeOpenXml; // Add this using directive
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -25,6 +26,7 @@ builder.Services.AddScoped<ICountdownInterface, CountdownService>();
 builder.Services.AddScoped<IReminderInterface, ReminderService>();
 builder.Services.AddScoped<INotificationInterface, NotificationService>();
 builder.Services.AddScoped<ICommentInterface, CommentService>();
+builder.Services.AddScoped<IAnalysisInterface, AnalysisService>(); // Register Analysis Service
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

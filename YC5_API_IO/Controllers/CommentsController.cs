@@ -43,7 +43,7 @@ namespace YC5_API_IO.Controllers
                         UserId = c.UserId,
                         CommentTitle = c.CommentTitle,
                         CommentText = c.CommentText,
-                        CreateAt = c.CreateAt
+                        CreateAt = c.CreatedAt
                     })
                 });
             }
@@ -86,7 +86,7 @@ namespace YC5_API_IO.Controllers
                         UserId = comment.UserId,
                         CommentTitle = comment.CommentTitle,
                         CommentText = comment.CommentText,
-                        CreateAt = comment.CreateAt
+                        CreateAt = comment.CreatedAt
                     }
                 });
             }
@@ -120,7 +120,7 @@ namespace YC5_API_IO.Controllers
                         UserId = newComment.UserId,
                         CommentTitle = newComment.CommentTitle,
                         CommentText = newComment.CommentText,
-                        CreateAt = newComment.CreateAt
+                        CreateAt = newComment.CreatedAt
                     }
                 });
             }
@@ -171,7 +171,7 @@ namespace YC5_API_IO.Controllers
                         UserId = updatedComment.UserId,
                         CommentTitle = updatedComment.CommentTitle,
                         CommentText = updatedComment.CommentText,
-                        CreateAt = updatedComment.CreateAt
+                        CreateAt = updatedComment.CreatedAt
                     }
                 });
             }

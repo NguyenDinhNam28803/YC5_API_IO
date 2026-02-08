@@ -48,6 +48,9 @@ namespace YC5_API_IO.Models
 
         public DateTime DueDate { get; set; } = DateTime.UtcNow;
 
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public DateTime? CompletedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }

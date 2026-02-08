@@ -24,7 +24,7 @@ namespace YC5_API_IO.Services
                 query = query.Where(c => c.TaskId == taskId);
             }
 
-            return await query.OrderByDescending(c => c.CreateAt).ToListAsync();
+            return await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
         }
 
         public async Task<Comment?> GetCommentByIdAsync(string userId, string commentId)
@@ -49,7 +49,7 @@ namespace YC5_API_IO.Services
                 TaskId = createCommentDto.TaskId,
                 CommentTitle = createCommentDto.CommentTitle,
                 CommentText = createCommentDto.CommentText,
-                CreateAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Comments.Add(comment);
@@ -86,11 +86,18 @@ namespace YC5_API_IO.Services
         {
             var comment = await _context.Comments
                                          .Where(c => c.UserId == userId && c.CommentId == commentId)
+                                         .Include(c => c.Attachments) // Include attachments to delete them
                                          .FirstOrDefaultAsync();
 
             if (comment == null)
             {
                 return false;
+            }
+
+            // Remove associated attachments first
+            if (comment.Attachments != null && comment.Attachments.Any())
+            {
+                _context.Attachments.RemoveRange(comment.Attachments);
             }
 
             _context.Comments.Remove(comment);

@@ -17,6 +17,9 @@ namespace YC5_API_IO.Models
         [StringLength(100)]
         public string RoleDescription { get; set; } = string.Empty;
 
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         // Relationships can be added here if needed
         public ICollection<User>? Users { get; set; }
     }

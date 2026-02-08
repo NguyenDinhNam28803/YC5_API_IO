@@ -31,5 +31,8 @@ namespace YC5_API_IO.Models
         public CountDownStatus CountDownStatus { get; set;} = CountDownStatus.Active;
 
         public DateTime TargetDate { get; set;} = DateTime.UtcNow;
+
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

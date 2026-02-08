@@ -19,5 +19,8 @@ namespace YC5_API_IO.Models
 
         [ForeignKey("TagId")]
         public Tag? Tag { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

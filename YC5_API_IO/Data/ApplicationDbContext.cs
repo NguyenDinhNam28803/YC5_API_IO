@@ -22,6 +22,7 @@ namespace YC5_API_IO.Data
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Reminder> Reminders { get; set; } // New DbSet for Reminders
         public DbSet<TaskTag> TaskTags { get; set; } // New DbSet for TaskTag intermediate table
+        public DbSet<Analysis> Analysis { get; set; } // New DbSet for Analysis table
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,9 +111,9 @@ namespace YC5_API_IO.Data
 
             // Seed Role data
             modelBuilder.Entity<Role>().HasData(
-                new Role { RoleId = "a18be9c0-aa65-4af8-bd17-002120485633", RoleName = "Admin", RoleDescription = "Administrator role with full access" },
-                new Role { RoleId = "c2a1e1b2-3e4f-5a6b-7c8d-9e0f1a2b3c4d", RoleName = "Manager", RoleDescription = "Manager role with elevated privileges" },
-                new Role { RoleId = "e5f6g7h8-i9j0-k1l2-m3n4-o5p6q7r8s9t0", RoleName = "User", RoleDescription = "Standard user role" }
+                new Role { RoleId = "a18be9c0-aa65-4af8-bd17-002120485633", RoleName = "Admin", RoleDescription = "Administrator role with full access", CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new Role { RoleId = "c2a1e1b2-3e4f-5a6b-7c8d-9e0f1a2b3c4d", RoleName = "Manager", RoleDescription = "Manager role with elevated privileges", CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new Role { RoleId = "e5f6g7h8-i9j0-k1l2-m3n4-o5p6q7r8s9t0", RoleName = "User", RoleDescription = "Standard user role", CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
             );
 
             // Configure User-Notification (One-to-Many) - this already exists and is fine
@@ -157,6 +158,13 @@ namespace YC5_API_IO.Data
                 .WithMany(t => t.Reminders) // Explicitly use the Reminders navigation property in Task.cs
                 .HasForeignKey(r => r.TaskId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Task if Reminders are associated
+
+            // Configure User-Analysis (One-to-Many)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Analysis)
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a User if Analysis records exist
         }
     }
 }
