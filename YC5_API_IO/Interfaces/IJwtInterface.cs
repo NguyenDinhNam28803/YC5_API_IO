@@ -7,5 +7,7 @@ namespace YC5_API_IO.Interfaces
     {
         JwtTokenDto GenerateJwtTokens(string userId, string roleName, string userName);
         ClaimsPrincipal? GetPrincipalFromExpiredToken(string token);
+        JwtTokenDto RefreshAccessToken(string accessToken, string refreshToken);
+
     }
 }

@@ -21,6 +21,10 @@ builder.Services.AddScoped<UserInterface, UserService>();
 builder.Services.AddScoped<ICategoryInterface, CategoryService>();
 builder.Services.AddScoped<ITagInterface, TagService>();
 builder.Services.AddScoped<ITaskInterface, TaskService>();
+builder.Services.AddScoped<ICountdownInterface, CountdownService>();
+builder.Services.AddScoped<IReminderInterface, ReminderService>();
+builder.Services.AddScoped<INotificationInterface, NotificationService>();
+builder.Services.AddScoped<ICommentInterface, CommentService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -54,7 +58,7 @@ builder.Services.AddSwaggerGen(options =>
                       Example: 'Bearer 12345abcdef'",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
     });
 
@@ -72,7 +76,7 @@ builder.Services.AddSwaggerGen(options =>
                 Name = "Bearer",
                 In = ParameterLocation.Header,
             },
-            new List<string>()
+            Array.Empty<string>()
         }
     });
 
@@ -95,7 +99,8 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
         ValidAudience = builder.Configuration["JwtSettings:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+            Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]) ??
+                throw new InvalidOperationException("JWT Secret Key is missing!"))
     };
 });
 

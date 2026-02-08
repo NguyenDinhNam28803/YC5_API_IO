@@ -19,16 +19,48 @@ namespace YC5_API_IO.Controllers
         [Route("{userId}")]
         public async Task<IActionResult> GetUserInfor([FromRoute] string userId)
         {
-            var response = await _userInterface.GetUserInfor(userId);
-            return Ok(response);
+            try
+            {
+                var response = await _userInterface.GetUserInfor(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "User information retrieved successfully",
+                    data = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost]
         [Route("Update")]
         public async Task<IActionResult> UpdateUserInfor([FromBody] UpdateUserRequestDto request)
         {
-            var result = await _userInterface.UpdateUserInfor(request.UserId, request.NewUsername, request.Password, request.NewPassword);
-            return Ok(result);
+            try
+            {
+                var result = await _userInterface.UpdateUserInfor(request.UserId, request.NewUsername, request.Password, request.NewPassword);
+                return Ok(new
+                {
+                    success = true,
+                    message = "User information updated successfully",
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
     }
 }

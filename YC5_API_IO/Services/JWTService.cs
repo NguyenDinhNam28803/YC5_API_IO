@@ -84,5 +84,65 @@ namespace YC5_API_IO.Services
 
             return principal;
         }
+
+        public JwtTokenDto RefreshAccessToken(string accessToken, string refreshToken)
+        {
+            var principal = GetPrincipalFromExpiredToken(accessToken);
+            if (principal == null)
+            {
+                throw new SecurityTokenException("Invalid access token");
+            }
+
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var roleName = principal.FindFirst(ClaimTypes.Role)?.Value;
+            var userName = principal.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleName) || string.IsNullOrEmpty(userName))
+            {
+                throw new SecurityTokenException("Invalid claims in access token");
+            }
+
+            // Validate refresh token
+            var refreshTokenPrincipal = ValidateRefreshToken(refreshToken);
+            if (refreshTokenPrincipal == null)
+            {
+                throw new SecurityTokenException("Invalid refresh token");
+            }
+            
+            // Here, you would typically also verify the refresh token against a stored one in your database
+            // to ensure it hasn't been revoked and matches the user. For this example, we skip the database check.
+
+            return GenerateJwtTokens(userId, roleName, userName);
+        }
+
+        private ClaimsPrincipal? ValidateRefreshToken(string refreshToken)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(_secretKey),
+                ValidateLifetime = true // We DO care about the refresh token's expiration date
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var principal = tokenHandler.ValidateToken(refreshToken, tokenValidationParameters, out SecurityToken securityToken);
+                var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+                if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new SecurityTokenException("Invalid refresh token algorithm");
+                }
+                return principal;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

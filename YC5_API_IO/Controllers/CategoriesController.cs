@@ -28,90 +28,190 @@ namespace YC5_API_IO.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            var userId = GetUserId();
-            var categories = await _categoryService.GetCategoriesAsync(userId);
-            return Ok(categories.Select(c => new CategoryDto
+            try
             {
-                CategoryId = c.CategoryId,
-                UserId = c.UserId,
-                CategoryName = c.CategoryName,
-                CategoryDescription = c.CategoryDescription,
-                Color = c.Color,
-                CreatedAt = c.CreatedAt,
-                IsDeleted = c.IsDeleted
-            }));
+                var userId = GetUserId();
+                var categories = await _categoryService.GetCategoriesAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Categories retrieved successfully",
+                    data = categories.Select(c => new CategoryDto
+                    {
+                        CategoryId = c.CategoryId,
+                        UserId = c.UserId,
+                        CategoryName = c.CategoryName,
+                        CategoryDescription = c.CategoryDescription,
+                        Color = c.Color,
+                        CreatedAt = c.CreatedAt,
+                        IsDeleted = c.IsDeleted
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // GET: api/Categories/{categoryId}
         [HttpGet("{categoryId}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(string categoryId)
         {
-            var userId = GetUserId();
-            var category = await _categoryService.GetCategoryByIdAsync(userId, categoryId);
-
-            if (category == null)
+            try
             {
-                return NotFound();
+                var userId = GetUserId();
+                var category = await _categoryService.GetCategoryByIdAsync(userId, categoryId);
+
+                if (category == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Category not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Category retrieved successfully",
+                    data = new CategoryDto
+                    {
+                        CategoryId = category.CategoryId,
+                        UserId = category.UserId,
+                        CategoryName = category.CategoryName,
+                        CategoryDescription = category.CategoryDescription,
+                        Color = category.Color,
+                        CreatedAt = category.CreatedAt,
+                        IsDeleted = category.IsDeleted
+                    }
+                });
             }
-
-            return Ok(new CategoryDto
+            catch (Exception ex)
             {
-                CategoryId = category.CategoryId,
-                UserId = category.UserId,
-                CategoryName = category.CategoryName,
-                CategoryDescription = category.CategoryDescription,
-                Color = category.Color,
-                CreatedAt = category.CreatedAt,
-                IsDeleted = category.IsDeleted
-            });
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // POST: api/Categories
         [HttpPost]
         public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto createCategoryDto)
         {
-            var userId = GetUserId();
-            var category = await _categoryService.CreateCategoryAsync(userId, createCategoryDto);
-            return CreatedAtAction(nameof(GetCategory), new { categoryId = category.CategoryId }, new CategoryDto
+            try
             {
-                CategoryId = category.CategoryId,
-                UserId = category.UserId,
-                CategoryName = category.CategoryName,
-                CategoryDescription = category.CategoryDescription,
-                Color = category.Color,
-                CreatedAt = category.CreatedAt,
-                IsDeleted = category.IsDeleted
-            });
+                var userId = GetUserId();
+                var category = await _categoryService.CreateCategoryAsync(userId, createCategoryDto);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Category created successfully",
+                    data = new CategoryDto
+                    {
+                        CategoryId = category.CategoryId,
+                        UserId = category.UserId,
+                        CategoryName = category.CategoryName,
+                        CategoryDescription = category.CategoryDescription,
+                        Color = category.Color,
+                        CreatedAt = category.CreatedAt,
+                        IsDeleted = category.IsDeleted
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // PUT: api/Categories/{categoryId}
         [HttpPut("{categoryId}")]
         public async Task<IActionResult> UpdateCategory(string categoryId, UpdateCategoryDto updateCategoryDto)
         {
-            var userId = GetUserId();
-            var updatedCategory = await _categoryService.UpdateCategoryAsync(userId, categoryId, updateCategoryDto);
-
-            if (updatedCategory == null)
+            try
             {
-                return NotFound();
-            }
+                var userId = GetUserId();
+                var updatedCategory = await _categoryService.UpdateCategoryAsync(userId, categoryId, updateCategoryDto);
 
-            return NoContent();
+                if (updatedCategory == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Category not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Category updated successfully",
+                    data = new CategoryDto
+                    {
+                        CategoryId = updatedCategory.CategoryId,
+                        UserId = updatedCategory.UserId,
+                        CategoryName = updatedCategory.CategoryName,
+                        CategoryDescription = updatedCategory.CategoryDescription,
+                        Color = updatedCategory.Color,
+                        CreatedAt = updatedCategory.CreatedAt,
+                        IsDeleted = updatedCategory.IsDeleted
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // DELETE: api/Categories/{categoryId}
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(string categoryId)
         {
-            var userId = GetUserId();
-            var result = await _categoryService.DeleteCategoryAsync(userId, categoryId);
-
-            if (!result)
+            try
             {
-                return NotFound();
-            }
+                var userId = GetUserId();
+                var result = await _categoryService.DeleteCategoryAsync(userId, categoryId);
 
-            return NoContent();
+                if (!result)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Category not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Category deleted successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
     }
 }

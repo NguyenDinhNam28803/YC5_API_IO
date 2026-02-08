@@ -11,11 +11,13 @@ namespace YC5_API_IO.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ICategoryInterface _categoryService;
+        private readonly ITagInterface _tagService;
 
-        public TaskService(ApplicationDbContext context, ICategoryInterface categoryService)
+        public TaskService(ApplicationDbContext context, ICategoryInterface categoryService, ITagInterface tagService)
         {
             _context = context;
             _categoryService = categoryService;
+            _tagService = tagService;
         }
 
         public async Task<IEnumerable<Task>> GetTasksAsync(string userId)
@@ -52,7 +54,6 @@ namespace YC5_API_IO.Services
                 UserId = userId,
                 CategoryId = createTaskDto.CategoryId,
                 ParentTaskId = createTaskDto.ParentTaskId,
-                TaskName = createTaskDto.TaskName,
                 TaskDescription = createTaskDto.TaskDescription,
                 TaskStatus = createTaskDto.TaskStatus,
                 TaskPriority = createTaskDto.TaskPriority,
@@ -62,6 +63,40 @@ namespace YC5_API_IO.Services
 
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
+
+            // Handle tags
+            if (createTaskDto.TagNames != null && createTaskDto.TagNames.Any())
+            {
+                foreach (var tagName in createTaskDto.TagNames)
+                {
+                    // Check if tag exists for this user
+                    var tag = await _context.Tags.FirstOrDefaultAsync(t => t.UserId == userId && t.TagName == tagName);
+
+                    if (tag == null)
+                    {
+                        // Create new tag if it doesn't exist
+                        tag = new Tag
+                        {
+                            TagId = Guid.NewGuid().ToString(),
+                            UserId = userId,
+                            TagName = tagName,
+                            CreatedAt = DateTime.UtcNow,
+                            IsDeleted = false
+                        };
+                        _context.Tags.Add(tag);
+                        await _context.SaveChangesAsync(); // Save new tag to get its ID
+                    }
+
+                    // Link tag to task
+                    var taskTag = new TaskTag
+                    {
+                        TaskId = task.TaskId,
+                        TagId = tag.TagId
+                    };
+                    _context.TaskTags.Add(taskTag);
+                }
+                await _context.SaveChangesAsync(); // Save all TaskTag relations
+            }
             return task;
         }
 

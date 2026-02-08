@@ -29,50 +29,86 @@ namespace YC5_API_IO.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasks()
         {
-            var userId = GetUserId();
-            var tasks = await _taskService.GetTasksAsync(userId);
-            return Ok(tasks.Select(t => new TaskDto
+            try
             {
-                TaskId = t.TaskId,
-                CategoryId = t.CategoryId,
-                UserId = t.UserId,
-                ParentTaskId = t.ParentTaskId,
-                TaskName = t.TaskName,
-                TaskDescription = t.TaskDescription,
-                TaskStatus = t.TaskStatus,
-                TaskPriority = t.TaskPriority,
-                DueDate = t.DueDate,
-                CompletedAt = t.CompletedAt,
-                UpdatedAt = t.UpdatedAt
-            }));
+                var userId = GetUserId();
+                var tasks = await _taskService.GetTasksAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Tasks retrieved successfully",
+                    data = tasks.Select(t => new TaskDto
+                    {
+                        TaskId = t.TaskId,
+                        CategoryId = t.CategoryId,
+                        UserId = t.UserId,
+                        ParentTaskId = t.ParentTaskId,
+                        TaskName = t.TaskName,
+                        TaskDescription = t.TaskDescription,
+                        TaskStatus = t.TaskStatus,
+                        TaskPriority = t.TaskPriority,
+                        DueDate = t.DueDate,
+                        CompletedAt = t.CompletedAt,
+                        UpdatedAt = t.UpdatedAt
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // GET: api/Tasks/{taskId}
         [HttpGet("{taskId}")]
         public async Task<ActionResult<TaskDto>> GetTask(string taskId)
         {
-            var userId = GetUserId();
-            var task = await _taskService.GetTaskByIdAsync(userId, taskId);
-
-            if (task == null)
+            try
             {
-                return NotFound();
+                var userId = GetUserId();
+                var task = await _taskService.GetTaskByIdAsync(userId, taskId);
+
+                if (task == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Task not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Task retrieved successfully",
+                    data = new TaskDto
+                    {
+                        TaskId = task.TaskId,
+                        CategoryId = task.CategoryId,
+                        UserId = task.UserId,
+                        ParentTaskId = task.ParentTaskId,
+                        TaskName = task.TaskName,
+                        TaskDescription = task.TaskDescription,
+                        TaskStatus = task.TaskStatus,
+                        TaskPriority = task.TaskPriority,
+                        DueDate = task.DueDate,
+                        CompletedAt = task.CompletedAt,
+                        UpdatedAt = task.UpdatedAt
+                    }
+                });
             }
-
-            return Ok(new TaskDto
+            catch (Exception ex)
             {
-                TaskId = task.TaskId,
-                CategoryId = task.CategoryId,
-                UserId = task.UserId,
-                ParentTaskId = task.ParentTaskId,
-                TaskName = task.TaskName,
-                TaskDescription = task.TaskDescription,
-                TaskStatus = task.TaskStatus,
-                TaskPriority = task.TaskPriority,
-                DueDate = task.DueDate,
-                CompletedAt = task.CompletedAt,
-                UpdatedAt = task.UpdatedAt
-            });
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // POST: api/Tasks
@@ -83,24 +119,33 @@ namespace YC5_API_IO.Controllers
             try
             {
                 var task = await _taskService.CreateTaskAsync(userId, createTaskDto);
-                return CreatedAtAction(nameof(GetTask), new { taskId = task.TaskId }, new TaskDto
+                return Ok(new
                 {
-                    TaskId = task.TaskId,
-                    CategoryId = task.CategoryId,
-                    UserId = task.UserId,
-                    ParentTaskId = task.ParentTaskId,
-                    TaskName = task.TaskName,
-                    TaskDescription = task.TaskDescription,
-                    TaskStatus = task.TaskStatus,
-                    TaskPriority = task.TaskPriority,
-                    DueDate = task.DueDate,
-                    CompletedAt = task.CompletedAt,
-                    UpdatedAt = task.UpdatedAt
+                    success = true,
+                    message = "Task created successfully",
+                    data = new TaskDto
+                    {
+                        TaskId = task.TaskId,
+                        CategoryId = task.CategoryId,
+                        UserId = task.UserId,
+                        ParentTaskId = task.ParentTaskId,
+                        TaskName = task.TaskName,
+                        TaskDescription = task.TaskDescription,
+                        TaskStatus = task.TaskStatus,
+                        TaskPriority = task.TaskPriority,
+                        DueDate = task.DueDate,
+                        CompletedAt = task.CompletedAt,
+                        UpdatedAt = task.UpdatedAt
+                    }
                 });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) // Catch generic Exception
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
 
@@ -115,14 +160,40 @@ namespace YC5_API_IO.Controllers
 
                 if (updatedTask == null)
                 {
-                    return NotFound();
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Task not found"
+                    });
                 }
 
-                return NoContent();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Task updated successfully",
+                    data = new TaskDto
+                    {
+                        TaskId = updatedTask.TaskId,
+                        CategoryId = updatedTask.CategoryId,
+                        UserId = updatedTask.UserId,
+                        ParentTaskId = updatedTask.ParentTaskId,
+                        TaskName = updatedTask.TaskName,
+                        TaskDescription = updatedTask.TaskDescription,
+                        TaskStatus = updatedTask.TaskStatus,
+                        TaskPriority = updatedTask.TaskPriority,
+                        DueDate = updatedTask.DueDate,
+                        CompletedAt = updatedTask.CompletedAt,
+                        UpdatedAt = updatedTask.UpdatedAt
+                    }
+                });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) // Catch generic Exception
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
 
@@ -131,37 +202,72 @@ namespace YC5_API_IO.Controllers
         public async Task<IActionResult> DeleteTask(string taskId)
         {
             var userId = GetUserId();
-            var result = await _taskService.DeleteTaskAsync(userId, taskId);
-
-            if (!result)
+            try
             {
-                return NotFound();
-            }
+                var result = await _taskService.DeleteTaskAsync(userId, taskId);
 
-            return NoContent();
+                if (!result)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Task not found"
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Task deleted successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         // GET: api/Tasks/ByCategory/{categoryId}
         [HttpGet("ByCategory/{categoryId}")]
         public async Task<ActionResult<IEnumerable<TaskDto>>> GetTasksByCategoryId(string categoryId)
         {
-            var userId = GetUserId();
-            var tasks = await _taskService.GetTasksByCategoryIdAsync(userId, categoryId);
-
-            return Ok(tasks.Select(t => new TaskDto
+            try
             {
-                TaskId = t.TaskId,
-                CategoryId = t.CategoryId,
-                UserId = t.UserId,
-                ParentTaskId = t.ParentTaskId,
-                TaskName = t.TaskName,
-                TaskDescription = t.TaskDescription,
-                TaskStatus = t.TaskStatus,
-                TaskPriority = t.TaskPriority,
-                DueDate = t.DueDate,
-                CompletedAt = t.CompletedAt,
-                UpdatedAt = t.UpdatedAt
-            }));
+                var userId = GetUserId();
+                var tasks = await _taskService.GetTasksByCategoryIdAsync(userId, categoryId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Tasks by category retrieved successfully",
+                    data = tasks.Select(t => new TaskDto
+                    {
+                        TaskId = t.TaskId,
+                        CategoryId = t.CategoryId,
+                        UserId = t.UserId,
+                        ParentTaskId = t.ParentTaskId,
+                        TaskName = t.TaskName,
+                        TaskDescription = t.TaskDescription,
+                        TaskStatus = t.TaskStatus,
+                        TaskPriority = t.TaskPriority,
+                        DueDate = t.DueDate,
+                        CompletedAt = t.CompletedAt,
+                        UpdatedAt = t.UpdatedAt
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
     }
 }

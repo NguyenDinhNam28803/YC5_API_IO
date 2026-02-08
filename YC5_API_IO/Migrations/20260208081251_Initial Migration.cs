@@ -33,7 +33,7 @@ namespace YC5_API_IO.Migrations
                     UserId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     RoleId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PasswordHasshed = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PasswordHasshed = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -59,7 +59,8 @@ namespace YC5_API_IO.Migrations
                     CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CategoryDescription = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Color = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,7 +70,7 @@ namespace YC5_API_IO.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,7 +92,7 @@ namespace YC5_API_IO.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,7 +115,28 @@ namespace YC5_API_IO.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    TagId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TagName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.TagId);
+                    table.ForeignKey(
+                        name: "FK_Tags_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -128,7 +150,7 @@ namespace YC5_API_IO.Migrations
                     TaskName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TaskDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     TaskStatus = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    TaskPriority = table.Column<int>(type: "int", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -153,7 +175,7 @@ namespace YC5_API_IO.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +184,7 @@ namespace YC5_API_IO.Migrations
                 {
                     CommentId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TaskId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CommentTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CommentText = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -174,26 +197,72 @@ namespace YC5_API_IO.Migrations
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "TaskId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
+                name: "Reminders",
                 columns: table => new
                 {
-                    TagId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TagName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TaskId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    ReminderId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TaskId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ReminderMessage = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    ReminderTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsTriggered = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.TagId);
+                    table.PrimaryKey("PK_Reminders", x => x.ReminderId);
                     table.ForeignKey(
-                        name: "FK_Tags_Tasks_TaskId",
+                        name: "FK_Reminders_Tasks_TaskId",
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "TaskId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reminders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskTags",
+                columns: table => new
+                {
+                    TaskId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TagId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TagId1 = table.Column<string>(type: "nvarchar(50)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskTags", x => new { x.TaskId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_TaskTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "TagId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TaskTags_Tags_TagId1",
+                        column: x => x.TagId1,
+                        principalTable: "Tags",
+                        principalColumn: "TagId");
+                    table.ForeignKey(
+                        name: "FK_TaskTags_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "TaskId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -271,6 +340,11 @@ namespace YC5_API_IO.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId",
+                table: "Comments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CountDowns_UserId",
                 table: "CountDowns",
                 column: "UserId");
@@ -281,9 +355,19 @@ namespace YC5_API_IO.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tags_TaskId",
-                table: "Tags",
+                name: "IX_Reminders_TaskId",
+                table: "Reminders",
                 column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_UserId",
+                table: "Reminders",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_UserId",
+                table: "Tags",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_CategoryId",
@@ -299,6 +383,16 @@ namespace YC5_API_IO.Migrations
                 name: "IX_Tasks_UserId",
                 table: "Tasks",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskTags_TagId",
+                table: "TaskTags",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskTags_TagId1",
+                table: "TaskTags",
+                column: "TagId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
@@ -319,10 +413,16 @@ namespace YC5_API_IO.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Reminders");
+
+            migrationBuilder.DropTable(
+                name: "TaskTags");
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Tasks");

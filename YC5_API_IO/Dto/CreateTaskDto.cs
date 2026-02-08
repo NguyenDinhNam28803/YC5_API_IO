@@ -13,10 +13,6 @@ namespace YC5_API_IO.Dto
         [StringLength(50, ErrorMessage = "Parent Task ID cannot exceed 50 characters.")]
         public string? ParentTaskId { get; set; }
 
-        [Required(ErrorMessage = "Task name is required.")]
-        [StringLength(50, ErrorMessage = "Task name cannot exceed 50 characters.")]
-        public string TaskName { get; set; } = string.Empty;
-
         [StringLength(250, ErrorMessage = "Task description cannot exceed 250 characters.")]
         public string TaskDescription { get; set; } = string.Empty;
 
@@ -25,5 +21,7 @@ namespace YC5_API_IO.Dto
         public PriorityLevel TaskPriority { get; set; } = PriorityLevel.Low;
 
         public DateTime DueDate { get; set; } = DateTime.UtcNow.AddDays(7); // Default to 7 days from now
+
+        public List<string> TagNames { get; set; } = new List<string>();
     }
 }

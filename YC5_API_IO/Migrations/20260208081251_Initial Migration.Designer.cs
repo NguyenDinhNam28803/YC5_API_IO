@@ -12,8 +12,8 @@ using YC5_API_IO.Data;
 namespace YC5_API_IO.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260208030040_UpdateTagIdForeignKey")]
-    partial class UpdateTagIdForeignKey
+    [Migration("20260208081251_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -503,7 +503,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Task", "Task")
                         .WithMany("Comments")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.User", "User")
@@ -542,7 +542,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Task", "Task")
                         .WithMany("Reminders")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.User", "User")
@@ -598,7 +598,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Tag", "Tag")
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.Tag", null)
