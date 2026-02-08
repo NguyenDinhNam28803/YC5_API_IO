@@ -19,16 +19,48 @@ namespace YC5_API_IO.Controllers
         [Route("Login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginRequestDto request)
         {
-            var response = await _authInterface.LoginUser(request.UserName, request.Password);
-            return Ok(response);
+            try
+            {
+                var response = await _authInterface.LoginUser(request.UserName, request.Password);
+                return Ok(new
+                {
+                    success = true,
+                    message = "User logged in successfully",
+                    data = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+
+            }
         }
 
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDto request)
         {
-            var response = await _authInterface.RegisterUser(request.UserName, request.Password, request.Email, request.PhoneNumber);
-            return Ok(response);
+            try
+            {
+                var response = await _authInterface.RegisterUser(request.UserName, request.Password, request.Email, request.PhoneNumber);
+                return Ok(new
+                {
+                    success = true,
+                    message= "User registered successfully",
+                    data= response
+                });
+            }
+            catch (Exception ex) {
+                return BadRequest(new
+                {
+                    success= false,
+                    message= ex.Message
+                });
+            }
         }
     }
 }

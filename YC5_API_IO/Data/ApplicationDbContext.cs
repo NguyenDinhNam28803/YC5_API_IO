@@ -40,21 +40,28 @@ namespace YC5_API_IO.Data
                 .HasMany(u => u.Categories)
                 .WithOne(c => c.User) // Explicitly use the User navigation property in Category.cs
                 .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete Categories when User is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting Categories when User is deleted
 
             // Configure User-CountDown (One-to-Many)
             modelBuilder.Entity<User>()
                 .HasMany(u => u.CountDowns)
                 .WithOne() // CountDown.cs doesn't have a User navigation property (not updated in this change set)
                 .HasForeignKey(cd => cd.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete CountDowns when User is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting CountDowns when User is deleted
 
             // Configure User-Task (One-to-Many)
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Tasks)
                 .WithOne(t => t.User) // Explicitly use the User navigation property in Task.cs
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete Tasks when User is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting Tasks when User is deleted
+
+            // Configure User-Tag (One-to-Many)
+            modelBuilder.Entity<User>()
+                .HasMany<Tag>()
+                .WithOne(t => t.User)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a User if Tags are associated
 
             // Configure Category-Task (One-to-Many)
             modelBuilder.Entity<Category>()
@@ -68,7 +75,7 @@ namespace YC5_API_IO.Data
                 .HasMany(t => t.Comments)
                 .WithOne(c => c.Task) // Explicitly use the Task navigation property in Comment.cs
                 .HasForeignKey(c => c.TaskId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete Comments when Task is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Task if Comments are associated
 
             // Configure Task-Tag (Many-to-Many through TaskTag)
             modelBuilder.Entity<TaskTag>()
@@ -78,13 +85,13 @@ namespace YC5_API_IO.Data
                 .HasOne(tt => tt.Task)
                 .WithMany(t => t.TaskTags)
                 .HasForeignKey(tt => tt.TaskId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TaskTag>()
                 .HasOne(tt => tt.Tag)
                 .WithMany() // Tag does not need a navigation property back to TaskTag unless explicitly required
                 .HasForeignKey(tt => tt.TagId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configure User-Comment (One-to-Many) - This was already updated
             modelBuilder.Entity<User>()
@@ -113,7 +120,7 @@ namespace YC5_API_IO.Data
                 .HasMany(u => u.Notifications)
                 .WithOne(n => n.User)
                 .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete Notifications when User is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting Notifications when User is deleted
 
             // Configure User-Attachment (One-to-Many - for uploaded attachments)
             modelBuilder.Entity<User>()
@@ -149,7 +156,7 @@ namespace YC5_API_IO.Data
                 .HasOne(r => r.Task)
                 .WithMany(t => t.Reminders) // Explicitly use the Reminders navigation property in Task.cs
                 .HasForeignKey(r => r.TaskId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete Reminders when Task is deleted
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Task if Reminders are associated
         }
     }
 }

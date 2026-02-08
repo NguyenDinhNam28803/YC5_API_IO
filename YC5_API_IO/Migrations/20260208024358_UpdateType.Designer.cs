@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YC5_API_IO.Data;
 
@@ -11,9 +12,11 @@ using YC5_API_IO.Data;
 namespace YC5_API_IO.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260208024358_UpdateType")]
+    partial class UpdateType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -489,7 +492,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.User", "User")
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -500,7 +503,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Task", "Task")
                         .WithMany("Comments")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.User", "User")
@@ -519,7 +522,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.User", null)
                         .WithMany("CountDowns")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -528,7 +531,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -539,7 +542,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Task", "Task")
                         .WithMany("Reminders")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.User", "User")
@@ -558,7 +561,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -580,7 +583,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.User", "User")
                         .WithMany("Tasks")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -595,7 +598,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Tag", "Tag")
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YC5_API_IO.Models.Tag", null)
@@ -605,7 +608,7 @@ namespace YC5_API_IO.Migrations
                     b.HasOne("YC5_API_IO.Models.Task", "Task")
                         .WithMany("TaskTags")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tag");

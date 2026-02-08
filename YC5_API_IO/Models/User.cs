@@ -22,7 +22,7 @@ namespace YC5_API_IO.Models
         public string UserName { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
         public string PasswordHasshed { get; set; } = string.Empty;
 
         [Required]
