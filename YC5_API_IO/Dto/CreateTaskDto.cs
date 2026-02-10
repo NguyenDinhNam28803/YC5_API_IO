@@ -16,6 +16,10 @@ namespace YC5_API_IO.Dto
         [StringLength(250, ErrorMessage = "Task description cannot exceed 250 characters.")]
         public string TaskDescription { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Task Name is required.")]
+        [StringLength(50, ErrorMessage = "Task Name cannot exceed 50 characters.")]
+        public string TaskName { get; set; } = string.Empty;
+
         public Models.TaskStatus TaskStatus { get; set; } = Models.TaskStatus.InProgress;
 
         public PriorityLevel TaskPriority { get; set; } = PriorityLevel.Low;

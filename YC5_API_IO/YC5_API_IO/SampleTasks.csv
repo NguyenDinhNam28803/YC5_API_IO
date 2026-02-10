@@ -1,0 +1,11 @@
+TaskName,CategoryId,UserId,TaskDescription,TaskStatus,TaskPriority,DueDate,ParentTaskId,TagNames
+Learn C#,CAT001,USER001,Complete the C# fundamentals course,InProgress,High,3/15/2026,,"Programming,Learning"
+Build API,CAT001,USER001,Develop the core API functionalities,InProgress,High,3/30/2026,TASK001,"Development,API"
+Write Tests,CAT002,USER002,Create unit tests for the API,InProgress,Medium,3/20/2026,,"Testing,Quality"
+Documentation,CAT003,USER003,Prepare API documentation,Completed,Low,2/28/2026,,Documentation
+Refactor Code,CAT001,USER001,Improve code quality and readability,InProgress,Medium,4/10/2026,TASK001,"Refactoring,Maintenance"
+Review UI,CAT004,USER004,Review the new UI designs,InProgress,Low,3/5/2026,,"UI/UX,Review"
+Meeting with Team,CAT003,USER001,Discuss project progress and next steps,InProgress,High,3/3/2026,,Meeting
+Project Planning,CAT001,USER002,Outline next quarter's project roadmap,InProgress,High,3/10/2026,,Planning
+User Feedback,CAT004,USER003,Gather and analyze user feedback,InProgress,Medium,3/25/2026,,Feedback
+Bug Fixing,CAT002,USER004,Address reported bugs,InProgress,High,3/18/2026,,Bug

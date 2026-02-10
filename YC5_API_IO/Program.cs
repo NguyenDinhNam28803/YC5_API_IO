@@ -106,9 +106,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalDev", policy =>
+    {
+        policy.AllowAnyOrigin() // <-- Allow requests from any origin
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseCors("AllowLocalDev");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
