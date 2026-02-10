@@ -58,5 +58,35 @@ namespace YC5_API_IO.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Exports statistics for a specific user to an Excel file.
+        /// Requires authentication.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose statistics are to be exported.</param>
+        /// <returns>An Excel file containing the specified user's statistics.</returns>
+        [HttpGet("export-excel-by-user/{userId}")]
+        [ProducesResponseType(200, Type = typeof(FileContentResult))]
+        [ProducesResponseType(401)] // Unauthorized
+        [ProducesResponseType(404)] // Not Found
+        [ProducesResponseType(500)] // Internal Server Error
+        public async Task<ActionResult> ExportExcelByUser(string userId)
+        {
+            try
+            {
+                // In a real application, you might want to add additional authorization checks here
+                // to ensure the authenticated user has permission to export statistics for the given userId.
+                var excelBytes = await _analysisService.ExportUserStatisticsToExcelAsync(userId);
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"UserStatistics_{userId}.xlsx");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

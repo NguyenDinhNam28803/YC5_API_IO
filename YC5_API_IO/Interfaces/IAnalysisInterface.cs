@@ -17,5 +17,12 @@ namespace YC5_API_IO.Interfaces
         /// </summary>
         /// <returns>A byte array representing the Excel file content.</returns>
         Task<byte[]> ExportUserStatisticsToExcelAsync();
+
+        /// <summary>
+        /// Exports statistics for a specific user to an Excel file.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose statistics are to be exported.</param>
+        /// <returns>A byte array representing the Excel file content for the specified user.</returns>
+        Task<byte[]> ExportUserStatisticsToExcelAsync(string userId);
     }
 }

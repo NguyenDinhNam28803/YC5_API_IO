@@ -106,6 +106,41 @@ namespace YC5_API_IO.Services
                                             })
                                             .ToListAsync();
 
+            return await GenerateExcelFile(latestAnalysis);
+        }
+
+        public async Task<byte[]> ExportUserStatisticsToExcelAsync(string userId)
+        {
+            var latestAnalysisForUser = await _context.Analysis
+                                                    .Include(a => a.User)
+                                                    .Where(a => a.UserId == userId)
+                                                    .GroupBy(a => a.UserId)
+                                                    .Select(g => g.OrderByDescending(a => a.AnalysisDate).FirstOrDefault())
+                                                    .Where(a => a != null)
+                                                    .Select(a => new AnalysisDto
+                                                    {
+                                                        UserId = a.UserId,
+                                                        UserName = a.User != null ? a.User.UserName : "Unknown User",
+                                                        AnalysisDate = a.AnalysisDate,
+                                                        TotalTasks = a.TotalTasks,
+                                                        CompletedTasks = a.CompletedTasks,
+                                                        TotalComments = a.TotalComments,
+                                                        TotalCategories = a.TotalCategories,
+                                                        TotalCountdowns = a.TotalCountdowns,
+                                                        LastActivityDate = a.LastActivityDate
+                                                    })
+                                                    .ToListAsync();
+
+            if (!latestAnalysisForUser.Any())
+            {
+                throw new KeyNotFoundException($"No analysis data found for user with ID: {userId}");
+            }
+
+            return await GenerateExcelFile(latestAnalysisForUser);
+        }
+
+        private async Task<byte[]> GenerateExcelFile(IEnumerable<AnalysisDto> analysisData)
+        {
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("User Statistics");
@@ -122,18 +157,19 @@ namespace YC5_API_IO.Services
                 worksheet.Cells[1, 9].Value = "Last Activity Date";
 
                 // Add data
-                for (int i = 0; i < latestAnalysis.Count; i++)
+                int row = 2;
+                foreach (var record in analysisData)
                 {
-                    var record = latestAnalysis[i];
-                    worksheet.Cells[i + 2, 1].Value = record.UserId;
-                    worksheet.Cells[i + 2, 2].Value = record.UserName;
-                    worksheet.Cells[i + 2, 3].Value = record.AnalysisDate.ToString("yyyy-MM-dd HH:mm:ss");
-                    worksheet.Cells[i + 2, 4].Value = record.TotalTasks;
-                    worksheet.Cells[i + 2, 5].Value = record.CompletedTasks;
-                    worksheet.Cells[i + 2, 6].Value = record.TotalComments;
-                    worksheet.Cells[i + 2, 7].Value = record.TotalCategories;
-                    worksheet.Cells[i + 2, 8].Value = record.TotalCountdowns;
-                    worksheet.Cells[i + 2, 9].Value = record.LastActivityDate?.ToString("yyyy-MM-dd HH:mm:ss");
+                    worksheet.Cells[row, 1].Value = record.UserId;
+                    worksheet.Cells[row, 2].Value = record.UserName;
+                    worksheet.Cells[row, 3].Value = record.AnalysisDate.ToString("yyyy-MM-dd HH:mm:ss");
+                    worksheet.Cells[row, 4].Value = record.TotalTasks;
+                    worksheet.Cells[row, 5].Value = record.CompletedTasks;
+                    worksheet.Cells[row, 6].Value = record.TotalComments;
+                    worksheet.Cells[row, 7].Value = record.TotalCategories;
+                    worksheet.Cells[row, 8].Value = record.TotalCountdowns;
+                    worksheet.Cells[row, 9].Value = record.LastActivityDate?.ToString("yyyy-MM-dd HH:mm:ss");
+                    row++;
                 }
 
                 // Auto-fit columns for better readability
@@ -144,3 +180,4 @@ namespace YC5_API_IO.Services
         }
     }
 }
+
