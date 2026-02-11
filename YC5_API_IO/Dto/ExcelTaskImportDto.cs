@@ -9,13 +9,17 @@ namespace YC5_API_IO.Dto
         [StringLength(50, ErrorMessage = "Task Name cannot exceed 50 characters.")]
         public string TaskName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Category ID is required.")]
         [StringLength(50, ErrorMessage = "Category ID cannot exceed 50 characters.")]
-        public string CategoryId { get; set; } = string.Empty;
+        public string? CategoryId { get; set; } // Will be looked up by CategoryName
 
-        [Required(ErrorMessage = "User ID is required.")]
         [StringLength(50, ErrorMessage = "User ID cannot exceed 50 characters.")]
-        public string UserId { get; set; } = string.Empty;
+        public string? UserId { get; set; } // Will be looked up by UserName
+
+        [StringLength(50, ErrorMessage = "User Name cannot exceed 50 characters.")]
+        public string? UserName { get; set; } // New property for user lookup
+
+        [StringLength(50, ErrorMessage = "Category Name cannot exceed 50 characters.")]
+        public string? CategoryName { get; set; } // New property for category lookup
 
         [StringLength(250, ErrorMessage = "Task description cannot exceed 250 characters.")]
         public string? TaskDescription { get; set; }
@@ -26,9 +30,10 @@ namespace YC5_API_IO.Dto
 
         public string? DueDate { get; set; } // Will be parsed to DateTime
 
-        [StringLength(50, ErrorMessage = "Parent Task ID cannot exceed 50 characters.")]
-        public string? ParentTaskId { get; set; }
+        [StringLength(50, ErrorMessage = "Excel Parent Task Identifier cannot exceed 50 characters.")]
+        public string? ExcelParentTaskIdentifier { get; set; }
 
         public string? TagNames { get; set; } // Comma-separated string
     }
 }
+

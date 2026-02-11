@@ -1,10 +1,12 @@
 ﻿using YC5_API_IO.Interfaces;
 using YC5_API_IO.Dto;
 using YC5_API_IO.Data;
+using Microsoft.EntityFrameworkCore; // Needed for FirstOrDefaultAsync
+using YC5_API_IO.Models; // Needed for Models.User
 
 namespace YC5_API_IO.Services
 {
-    public class UserService : UserInterface
+    public class UserService : IUserInterface // Changed
     {
         private readonly ApplicationDbContext _context;
         public UserService(ApplicationDbContext context)
@@ -74,6 +76,12 @@ namespace YC5_API_IO.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        // New method implementation
+        public async Task<User?> GetUserByNameAsync(string userName)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
     }
 }

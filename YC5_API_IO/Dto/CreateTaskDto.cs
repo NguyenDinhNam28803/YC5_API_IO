@@ -23,9 +23,11 @@ namespace YC5_API_IO.Dto
         public Models.TaskStatus TaskStatus { get; set; } = Models.TaskStatus.InProgress;
 
         public PriorityLevel TaskPriority { get; set; } = PriorityLevel.Low;
-
+        
         public DateTime DueDate { get; set; } = DateTime.UtcNow.AddDays(7); // Default to 7 days from now
 
         public List<string> TagNames { get; set; } = new List<string>();
+
+        public string? UserId { get; set; } // Added to fix CS1061: allows controller to assign looked-up UserId
     }
 }

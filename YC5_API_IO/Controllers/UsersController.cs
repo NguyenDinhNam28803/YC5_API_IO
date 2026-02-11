@@ -9,8 +9,8 @@ namespace YC5_API_IO.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserInterface _userInterface;
-        public UsersController(UserInterface userInterface)
+        private readonly IUserInterface _userInterface;
+        public UsersController(IUserInterface userInterface)
         {
             _userInterface = userInterface;
         }

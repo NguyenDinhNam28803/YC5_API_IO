@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Text;
 using YC5_API_IO.Interfaces;
 using YC5_API_IO.Services;
-using OfficeOpenXml; // Add this using directive
-
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
@@ -18,7 +16,7 @@ builder.Services.AddDbContext<YC5_API_IO.Data.ApplicationDbContext>(options =>
 // Register JWT Service
 builder.Services.AddScoped<IJwtInterface, JWTService>();
 builder.Services.AddScoped<AuthInterface, AuthService>();
-builder.Services.AddScoped<UserInterface, UserService>();
+builder.Services.AddScoped<IUserInterface, UserService>();
 builder.Services.AddScoped<ICategoryInterface, CategoryService>();
 builder.Services.AddScoped<ITagInterface, TagService>();
 builder.Services.AddScoped<ITaskInterface, TaskService>();
@@ -27,6 +25,8 @@ builder.Services.AddScoped<IReminderInterface, ReminderService>();
 builder.Services.AddScoped<INotificationInterface, NotificationService>();
 builder.Services.AddScoped<ICommentInterface, CommentService>();
 builder.Services.AddScoped<IAnalysisInterface, AnalysisService>(); // Register Analysis Service
+builder.Services.AddScoped<IExcelService, ExcelService>(); // Register Excel Service
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

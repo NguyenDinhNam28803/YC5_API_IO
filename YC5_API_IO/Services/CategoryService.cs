@@ -91,5 +91,11 @@ namespace YC5_API_IO.Services
         {
             return await _context.Categories.AnyAsync(c => c.UserId == userId && c.CategoryId == categoryId && !c.IsDeleted);
         }
+
+        // New method implementation
+        public async Task<Category?> GetCategoryByNameAsync(string userId, string categoryName)
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.UserId == userId && c.CategoryName == categoryName && !c.IsDeleted);
+        }
     }
 }

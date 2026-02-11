@@ -11,5 +11,6 @@ namespace YC5_API_IO.Interfaces
         Task<Category?> UpdateCategoryAsync(string userId, string categoryId, UpdateCategoryDto updateCategoryDto);
         Task<bool> DeleteCategoryAsync(string userId, string categoryId);
         Task<bool> CategoryExistsAsync(string userId, string categoryId);
+        Task<Category?> GetCategoryByNameAsync(string userId, string categoryName); // New method
     }
 }
