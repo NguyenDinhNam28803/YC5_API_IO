@@ -89,9 +89,9 @@ namespace YC5_API_IO.Services
         {
             var latestAnalysis = await _context.Analysis
                                             .Include(a => a.User)
-                                            .GroupBy(a => a.UserId)
-                                            .Select(g => g.OrderByDescending(a => a.AnalysisDate).FirstOrDefault())
-                                            .Where(a => a != null)
+                                            .Where(a => a.AnalysisDate == _context.Analysis
+                                                .Where(sub => sub.UserId == a.UserId)
+                                                .Max(sub => sub.AnalysisDate))
                                             .Select(a => new AnalysisDto
                                             {
                                                 UserId = a.UserId,
@@ -113,10 +113,10 @@ namespace YC5_API_IO.Services
         {
             var latestAnalysisForUser = await _context.Analysis
                                                     .Include(a => a.User)
-                                                    .Where(a => a.UserId == userId)
-                                                    .GroupBy(a => a.UserId)
-                                                    .Select(g => g.OrderByDescending(a => a.AnalysisDate).FirstOrDefault())
-                                                    .Where(a => a != null)
+                                                    .Where(a => a.UserId == userId &&
+                                                                a.AnalysisDate == _context.Analysis
+                                                                    .Where(sub => sub.UserId == userId)
+                                                                    .Max(sub => sub.AnalysisDate))
                                                     .Select(a => new AnalysisDto
                                                     {
                                                         UserId = a.UserId,
