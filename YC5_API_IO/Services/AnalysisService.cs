@@ -41,10 +41,10 @@ namespace YC5_API_IO.Services
                 var totalCountdowns = user.CountDowns?.Count ?? 0;
 
                 // Determine last activity date from various activities
-                var lastTaskActivity = user.Tasks?.Max(t => t.UpdatedAt ?? t.CompletedAt);
-                var lastCommentActivity = user.Comments?.Max(c => c.CreatedAt);
-                var lastCategoryActivity = user.Categories?.Max(c => c.CreatedAt);
-                var lastCountdownActivity = user.CountDowns?.Max(cd => cd.CreatedAt);
+                var lastTaskActivity = user.Tasks != null && user.Tasks.Any() ? user.Tasks.Max(t => t.UpdatedAt ?? t.CompletedAt) : (DateTime?)null;
+                var lastCommentActivity = user.Comments != null && user.Comments.Any() ? user.Comments.Max(c => c.CreatedAt) : (DateTime?)null;
+                var lastCategoryActivity = user.Categories != null && user.Categories.Any() ? user.Categories.Max(c => c.CreatedAt) : (DateTime?)null;
+                var lastCountdownActivity = user.CountDowns != null && user.CountDowns.Any() ? user.CountDowns.Max(cd => cd.CreatedAt) : (DateTime?)null;
 
                 DateTime? lastActivityDate = null;
                 if (lastTaskActivity.HasValue) lastActivityDate = lastTaskActivity;
@@ -89,9 +89,9 @@ namespace YC5_API_IO.Services
         {
             var latestAnalysis = await _context.Analysis
                                             .Include(a => a.User)
-                                            .Where(a => a.AnalysisDate == _context.Analysis
-                                                .Where(sub => sub.UserId == a.UserId)
-                                                .Max(sub => sub.AnalysisDate))
+                                            //.Where(a => a.AnalysisDate == _context.Analysis
+                                            //    .Where(sub => sub.UserId == a.UserId)
+                                            //    .Max(sub => sub.AnalysisDate))
                                             .Select(a => new AnalysisDto
                                             {
                                                 UserId = a.UserId,
@@ -113,15 +113,12 @@ namespace YC5_API_IO.Services
         {
             var latestAnalysisForUser = await _context.Analysis
                                                     .Include(a => a.User)
-                                                    .Where(a => a.UserId == userId &&
-                                                                a.AnalysisDate == _context.Analysis
-                                                                    .Where(sub => sub.UserId == userId)
-                                                                    .Max(sub => sub.AnalysisDate))
+                                                    .Where(a => a.UserId == userId)
                                                     .Select(a => new AnalysisDto
                                                     {
                                                         UserId = a.UserId,
                                                         UserName = a.User != null ? a.User.UserName : "Unknown User",
-                                                        AnalysisDate = a.AnalysisDate,
+                                                        AnalysisDate = DateTime.Now,
                                                         TotalTasks = a.TotalTasks,
                                                         CompletedTasks = a.CompletedTasks,
                                                         TotalComments = a.TotalComments,

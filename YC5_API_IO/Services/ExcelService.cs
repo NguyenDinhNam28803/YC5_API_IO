@@ -43,7 +43,6 @@ namespace YC5_API_IO.Services
                 return new ImportTasksResult { Errors = initialErrors };
             }
 
-            // Get header row
             var headerCells = worksheet.Cells[worksheet.Dimension.Start.Row, worksheet.Dimension.Start.Column, 1, worksheet.Dimension.End.Column];
             var headerMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
@@ -55,7 +54,6 @@ namespace YC5_API_IO.Services
                 }
             }
 
-            // Updated required headers
             var requiredHeaders = new[] { "TaskName", "UserName", "CategoryName" };
             foreach (var requiredHeader in requiredHeaders)
             {
@@ -70,7 +68,6 @@ namespace YC5_API_IO.Services
                 return new ImportTasksResult { Errors = initialErrors };
             }
 
-            // Get properties of ExcelTaskImportDto for mapping
             var dtoProperties = typeof(ExcelTaskImportDto).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             for (int rowNum = worksheet.Dimension.Start.Row + 1; rowNum <= worksheet.Dimension.End.Row; rowNum++)
@@ -103,8 +100,6 @@ namespace YC5_API_IO.Services
                 var createTaskDto = new CreateTaskDto
                 {
                     TaskName = excelTaskDto.TaskName,
-                    // CategoryId and UserId will be looked up
-                    // ParentTaskId will be resolved later in the multi-pass loop
                     TaskDescription = excelTaskDto.TaskDescription ?? string.Empty,
                     TagNames = excelTaskDto.TagNames?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList() ?? new List<string>()
                 };
@@ -139,7 +134,7 @@ namespace YC5_API_IO.Services
 
             // Process tasks with a multi-pass approach to handle parent-child dependencies
             var taskNameIdMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); // Maps Excel TaskName to generated TaskId
-            var createdModelTasks = new List<YC5_API_IO.Models.Task>(); // Temporary list for models
+            var createdModelTasks = new List<Models.Task>(); // Temporary list for models
             var allImportErrors = new List<ImportError>();
 
             int maxPasses = tasksToProcess.Count + 1; // Max passes to detect circular dependencies
@@ -151,7 +146,7 @@ namespace YC5_API_IO.Services
                 foreach (var taskToImport in tasksToProcess.Where(t => !t.IsImported && !t.Errors.Any()).ToList()) // Only process unimported tasks without parsing errors
                 {
                     // --- User and Category Lookup ---
-                    Models.User? user = null;
+                    User? user = null;
                     if (!string.IsNullOrWhiteSpace(taskToImport.UserName))
                     {
                         user = await _userService.GetUserByNameAsync(taskToImport.UserName);
@@ -168,7 +163,7 @@ namespace YC5_API_IO.Services
                         continue;
                     }
 
-                    Models.Category? category = null;
+                    Category? category = null;
                     if (!string.IsNullOrWhiteSpace(taskToImport.CategoryName))
                     {
                         category = await _categoryService.GetCategoryByNameAsync(user.UserId, taskToImport.CategoryName);
