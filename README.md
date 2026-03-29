@@ -16,35 +16,62 @@ YC5_API_IO là một giải pháp Web API mạnh mẽ được xây dựng trên
   - OpenAPI/Swagger (Tài liệu hóa API)
 - **DevOps:** Docker hỗ trợ môi trường container.
 
+## ✨ Tính năng chính
+
+Hệ thống cung cấp một bộ tính năng toàn diện để quản lý công việc và năng suất:
+
+1.  **Quản lý Công việc Toàn diện:**
+    *   Tạo, cập nhật, xóa và theo dõi trạng thái công việc.
+    *   **Cấu trúc phân cấp (Sub-tasks):** Hỗ trợ tạo các công việc con không giới hạn cấp độ, giúp chia nhỏ các dự án lớn.
+    *   **Phân loại & Gắn thẻ:** Sử dụng Categories và Tags (N-N) để tổ chức công việc khoa học.
+    *   **Mức độ ưu tiên:** Thiết lập độ ưu tiên (Low, Medium, High) để tập trung vào việc quan trọng.
+
+2.  **Tương tác & Cộng tác:**
+    *   **Comments:** Gửi phản hồi và thảo luận trực tiếp trên từng đầu việc.
+    *   **Attachments:** Đính kèm tài liệu, hình ảnh liên quan đến công việc hoặc bình luận.
+
+3.  **Theo dõi Thời gian & Nhắc nhở:**
+    *   **Reminders:** Hệ thống nhắc nhở linh hoạt cho từng công việc.
+    *   **Notifications:** Thông báo thời gian thực về các thay đổi và nhắc nhở.
+    *   **CountDown:** Bộ đếm ngược cho các sự kiện hoặc deadline quan trọng.
+
+4.  **Phân tích & Báo cáo:**
+    *   **Analysis:** Tự động tổng hợp thống kê hiệu suất làm việc của người dùng (tổng số việc, số việc hoàn thành, hoạt động gần nhất).
+    *   **Xuất dữ liệu Excel:** Hỗ trợ xuất báo cáo thống kê chi tiết ra file Excel chuyên nghiệp.
+    *   **Nhập dữ liệu Excel:** Cho phép import hàng loạt công việc từ file Excel giúp tiết kiệm thời gian.
+
+5.  **Bảo mật & Phân quyền:**
+    *   Hệ thống xác thực JWT mạnh mẽ.
+    *   Phân quyền người dùng (Role-based access control) giúp quản lý hệ thống an toàn.
+
 ## 🏗️ Kiến trúc dữ liệu (Data Models)
 
-Hệ thống bao gồm các thực thể chính với các thuộc tính chi tiết:
+Hệ thống được thiết kế với các thực thể có mối quan hệ chặt chẽ:
 
 ### 1. Người dùng (User)
-- `UserId`: Khóa chính.
-- `UserName`, `Email`, `PhoneNumber`: Thông tin định danh.
-- `PasswordHasshed`: Mật khẩu đã được mã hóa.
-- `CreatedAt`, `LastUpdatedAt`: Theo dõi thời gian tạo và cập nhật.
-- **Quan hệ:** Một người dùng có thể có nhiều Danh mục, Công việc và Bộ đếm ngược.
+- Trung tâm của hệ thống, sở hữu các tài nguyên cá nhân.
+- **Quan hệ:** 1-N với Task, Category, CountDown, Notification, Comment, và Analysis.
 
 ### 2. Công việc (Task)
-- `TaskId`: Khóa chính.
-- `TaskName`, `TaskDescription`: Thông tin chi tiết công việc.
-- `TaskStatus`: Trạng thái (`InProgress`, `Completed`).
-- `Status` (Priority): Mức độ ưu tiên (`Low`, `Medium`, `High`).
-- `DueDate`, `CompletedAt`: Quản lý thời hạn.
-- **Tính năng đặc biệt:** Hỗ trợ `ParentTaskId` để tạo cấu trúc công việc con (Sub-tasks) không giới hạn cấp.
-- **Quan hệ:** Gắn liền với Category, User, Tags, và Comments.
+- Thực thể quan trọng nhất, hỗ trợ đệ quy.
+- **Quan hệ:**
+    - Thuộc về 1 User và 1 Category.
+    - 1-N với Sub-tasks (Self-referencing).
+    - 1-N với Comments và Reminders.
+    - N-N với Tags (thông qua bảng trung gian TaskTags).
+    - 1-N với Attachments.
 
 ### 3. Danh mục (Category)
-- `CategoryId`, `CategoryName`, `CategoryDescription`.
-- `Color`: Mã màu để phân loại trực quan (Mặc định: "Gray").
+- Nhóm các công việc cùng chủ đề.
+- **Quan hệ:** 1-N với Task.
 
-### 4. Thành phần khác
-- **Comment:** Hỗ trợ trao đổi trong từng công việc.
-- **Tag:** Nhãn dán linh hoạt để lọc công việc.
-- **Role:** Hệ thống phân quyền (Admin, User, v.v.).
-- **CountDown:** Bộ đếm ngược cho các sự kiện quan trọng.
+### 4. Thành phần hỗ trợ
+- **Tag:** Nhãn dán linh hoạt, có thể gắn cho nhiều Task khác nhau.
+- **Comment:** Lưu vết trao đổi, hỗ trợ đính kèm file.
+- **Reminder & Notification:** Hỗ trợ nhắc lịch và thông báo hệ thống.
+- **CountDown:** Theo dõi các mốc thời gian đặc biệt.
+- **Analysis:** Lưu trữ dữ liệu thống kê định kỳ cho từng người dùng.
+- **Role:** Xác định quyền hạn của người dùng trong hệ thống.
 
 ## ⚙️ Cấu hình hệ thống
 
@@ -59,20 +86,59 @@ Project sử dụng file `appsettings.json` để quản lý các tham số cấ
 - **EmailSettings:** Cấu hình SMTP Gmail để gửi thông báo tự động.
 - **EPPlus:** Giấy phép sử dụng Non-Commercial cho cá nhân.
 
+## 📡 Tài liệu API (API Reference)
+
+Dưới đây là tóm tắt các nhóm API chính. Chi tiết xem tại Swagger UI (`/swagger`).
+
+### 🔐 Xác thực & Người dùng
+- `POST /api/Auths/Register`: Đăng ký tài khoản mới.
+- `POST /api/Auths/Login`: Đăng nhập lấy Access Token & Refresh Token.
+- `POST /api/Auths/Refresh`: Làm mới Access Token.
+- `GET /api/Users/{userId}`: Lấy thông tin chi tiết người dùng.
+- `POST /api/Users/Update`: Cập nhật thông tin cá nhân.
+
+### ✅ Công việc (Tasks)
+- `GET /api/Tasks`: Lấy danh sách công việc của người dùng hiện tại.
+- `POST /api/Tasks`: Tạo công việc mới.
+- `GET /api/Tasks/{taskId}`: Xem chi tiết một công việc.
+- `PUT /api/Tasks/{taskId}`: Cập nhật công việc.
+- `DELETE /api/Tasks/{taskId}`: Xóa công việc.
+- `GET /api/Tasks/ByCategory/{categoryId}`: Lọc công việc theo danh mục.
+
+### 📁 Danh mục & Thẻ (Categories & Tags)
+- `GET /api/Categories`: Quản lý danh mục công việc.
+- `GET /api/Tags`: Quản lý các nhãn dán.
+
+### 💬 Tương tác (Comments & Notifications)
+- `GET /api/Comments?taskId={id}`: Lấy danh sách bình luận của công việc.
+- `POST /api/Comments`: Thêm bình luận mới.
+- `GET /api/Notifications`: Lấy danh sách thông báo.
+- `PUT /api/Notifications/{id}/mark-as-read`: Đánh dấu đã đọc.
+
+### ⏰ Nhắc nhở & Đếm ngược
+- `GET /api/Reminders`: Quản lý các nhắc nhở công việc.
+- `GET /api/Countdowns`: Quản lý các bộ đếm ngược sự kiện.
+
+### 📊 Phân tích & Excel
+- `POST /api/Analysis/generate-statistics`: Tổng hợp dữ liệu thống kê mới nhất.
+- `GET /api/Analysis/export-excel`: Xuất báo cáo thống kê toàn hệ thống (Excel).
+- `POST /api/Excel/import/tasks`: Import danh sách công việc từ file Excel.
+
 ## 📁 Cấu trúc thư mục chi tiết
 
 ```text
 YC5_API_IO/
-├── Controllers/       # Chứa các bộ điều khiển xử lý HTTP Request (Hiện tại: WeatherForecast)
-├── Data/              # Quản lý Database Context (ApplicationDbContext)
-├── Models/            # Định nghĩa các thực thể (Entities) của hệ thống
-├── Interfaces/        # Định nghĩa các giao diện nghiệp vụ (ví dụ: IJwtInterfaces)
-├── Services/          # Triển khai logic nghiệp vụ (ví dụ: JWTService)
-├── Dto/               # Data Transfer Objects (Đang phát triển)
+├── Controllers/       # Chứa các bộ điều khiển xử lý HTTP Request (Task, User, Category, v.v.)
+├── Data/              # Quản lý Database Context (ApplicationDbContext) và Migrations
+├── Models/            # Định nghĩa các thực thể (Entities) của hệ thống (POCO classes)
+├── Interfaces/        # Định nghĩa các giao diện nghiệp vụ (Abstractions)
+├── Services/          # Triển khai logic nghiệp vụ chi tiết
+├── Dto/               # Data Transfer Objects - Chuyển đổi dữ liệu giữa API và Service
+├── Migrations/        # Các file migration của Entity Framework Core
 ├── Properties/        # Cấu hình môi trường và launchSettings.json
-├── YC5_API_IO.csproj  # File quản lý package và project
-├── Dockerfile         # Cấu hình đóng gói ứng dụng
-└── Program.cs         # Entry point, cấu hình Middleware và Dependency Injection
+├── YC5_API_IO.csproj  # File quản lý package và project .NET
+├── Dockerfile         # Cấu hình đóng gói ứng dụng (Containerization)
+└── Program.cs         # Entry point, cấu hình Middleware, Dependency Injection, và Swagger
 ```
 
 ## 🛠️ Hướng dẫn cài đặt
@@ -106,7 +172,7 @@ YC5_API_IO/
    Truy cập `https://localhost:7157/swagger` (cổng có thể thay đổi tùy cấu hình) để xem giao diện Swagger UI.
 
 ## 📝 Trạng thái dự án
-Dự án hiện đã hoàn thành phần thiết kế Models và cấu hình Infrastructure (Authentication, DB Context). Các logic nghiệp vụ (Services) và các API Endpoints (Controllers) đang trong quá trình hoàn thiện.
+Dự án đã hoàn thiện khung kiến trúc cơ bản (Clean Architecture), tích hợp đầy đủ các tính năng nghiệp vụ cốt lõi từ quản lý công việc, phân quyền, đến phân tích dữ liệu và báo cáo Excel. Hệ thống đã sẵn sàng để tích hợp với các ứng dụng frontend.
 
 ---
 **Phát triển bởi:** Nam Nguyễn (nguyendinhnam241209@gmail.com)
